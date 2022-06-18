@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <title>Drawing SVG Shapes with D3</title>
+</head>
+<body>
+  <!--create text by using D3.js -->
+  <script>
+     d3.select("body")
+      .append("svg")
+        .attr("width",250)
+        .attr("height",50)
+      .append("text")
+        .text("easy?")
+        .attr("x",0)
+        .attr("y",25)
+        .style("fill","green")
+   </script>
+
+</body>
+</html>
