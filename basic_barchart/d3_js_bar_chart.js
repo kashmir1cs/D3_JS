@@ -8,15 +8,14 @@ var svg = d3.select("body").append("svg")
             .attr("width",w)
             .attr("height",h);
 
-//20 이상인 값만 표시 
+//20 이상인 rect 요소만 색상 변경 
 function colorPicker(v){
   if (v<=20) {return "#666666";}
   else if (v>20) {return "#FF0033";}
 }
 
 //bar size에 맞게 시작 위치 변경
-//색상에 rgb 함수 호출
-//데이터 추가
+
 svg.selectAll("rect")
   .data(dataset)
   .enter() 
@@ -25,10 +24,11 @@ svg.selectAll("rect")
   .attr("y", function(d) {return h-(d*4);})
   .attr("width", w / dataset.length - padding)
   .attr("height", function(d) {return d*4;})
-  .attr("fill", function(d) {return colorPicker(d);})
+  .attr("fill", function(d) {return colorPicker(d);}) //색상에 rgb 함수 호출
+   //"fill", function(d) {return "rgb(0," +(d*10)+", 0)";} //값에 따라 rect 색상 바꿀때 사용 (rgb 함수 활용)
 
 // add label
-
+//데이터 추가
 svg.selectAll("text")
   .data(dataset)
   .enter()
