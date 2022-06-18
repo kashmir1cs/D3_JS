@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <title>Drawing SVG Shapes with D3</title>
+</head>
+<body>
+  <h3>SVG Bar</h3>
+  <svg>
+    <rect width="50" height="200" style="fill:blue"/>
+    
+  </svg>
+  <h3>D3 bar</h3>
+  <script>
+    d3.select("body") //select <body> html tag
+      .append("svg")  // add an <svg> html element
+      .append("rect") // add <rect> svg element
+        .attr("width",50) //set the attribute
+        .attr("height",200)
+        .style("fill","cyan")
+   </script>
+</body>
+</html>
