@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <title>D3.js /w CSV file</title>
+</head>
+
+<body>
+    
+    <script>
+        var h=100;
+        var w=400;
+        var ds; // dataset 입력위한 전역변수
+        var salesTotal=0.0;
+        var salesAvg=0.0;
+        var metrics=[]; //array 선언
+        //d3.csv 활용
+        //html과 같은 경로에 있어야 그래프 작성 가능
+        d3.csv("monthlysales.csv",function(error, data){
+            if (error) {  //Error 있는지 검색
+                    console.log(error);  //Error있을 경우 Console에서 log 출력 (print 함수)
+                } else {      //Error가 없을경우
+                    data.forEach(function(d) { d["sales"] = +d["sales"]}); // string to number
+                    data.forEach(function(d) { d["month"] = +d["month"]}); // string to number
+                    
+                    ds=data; //put the data in the global var
+                    console.log(data);   //Now show me the money!
+                }
+                buildLine();
+                showTotal();
+                
+        });
+
+        function buildLine(){
+            var lineFun = d3.svg.line()
+                .x(function(d) {return ((d["month"]-20130001)/3.25); } )
+                .y(function(d) {return h-d["sales"]; } )
+                .interpolate("linear");
+            var svg = d3.select("body")
+                .append("svg")
+                .attr({ width:w, height:h});
+            var viz= svg.append("path") //path 객체 추가
+                        .attr({
+                            d:lineFun(ds),
+                            "stroke":"purple",
+                            "stroke-width":2,
+                            "fill" :"none"
+                        });
+
+        }
+
+        function showTotal(){
+            var t = d3.select("body").append("table");
+
+            //get total
+            for (var i=0;i<ds.length;i++){
+                // console.log(ds[i]['sales'])
+                salesTotal +=ds[i]['sales']; //sales 합계 계산
+                
+                
+            }
+            salesAvg = salesTotal/ds.length; //average 계산
+            console.log(salesTotal);
+            console.log(salesAvg);
+            metrics.push("Sales Total: " + salesTotal);
+            metrics.push("Sales Average: " + salesAvg.toFixed(2)); //소수점 정리
+
+            // add total to table
+            var tr = t.selectAll("tr")
+                    .data(metrics)
+                    .enter()
+                    .append("tr")
+                    .append("td")
+                    .text(function(d) { return d; } );
+
+        }
+
+
+    </script>
+</body>
+
+</html>
