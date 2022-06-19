@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <title>D3.js /w json file</title>
+</head>
+
+<body>
+    
+    <script>
+        var h=100;
+        var w=400;
+        //d3.json 활용 
+        //html과 같은 경로에 있어야 그래프 작성 가능
+        // nested json data 활용2
+        // json 안에 Array가 들어있을 경우 (foreach활용)
+        d3.json("nested_json_file.json",function(error, data){
+            if (error) {  //Error 있는지 검색
+                    console.log(error);  //Error있을 경우 Console에서 log 출력 (print 함수)
+                } else {      //Error가 없을경우
+                    console.log(data);   // data 확인
+                }
+                // contents내 data를 순회하며 그래프 작성
+                data.contents.forEach(function(ds){
+                    console.log(ds);
+                    showHeader(ds);
+                    buildLine(ds);
+                })
+                
+
+        });
+        // category 명칭 추가
+        function showHeader(ds){
+			 
+             d3.select("body").append("h1")
+                 .text(ds.category + " Sales (2013)");
+             
+         }
+
+        function buildLine(ds){
+            var lineFun = d3.svg.line()
+                .x(function(d) {return ((d.month-20130001)/3.25); } )
+                .y(function(d) {return h-d.sales; } )
+                .interpolate("linear");
+            var svg = d3.select("body")
+                .append("svg")
+                .attr({ width:w, height:h});
+            var viz= svg.append("path") //path 객체 추가
+                        .attr({
+                            d:lineFun(ds.monthlySales),
+                            "stroke":"purple",
+                            "stroke-width":2,
+                            "fill" :"none"
+                        });
+        }
+
+
+
+    </script>
+</body>
+
+</html>
