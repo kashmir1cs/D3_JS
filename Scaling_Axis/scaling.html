@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <title>D3.js /w using WEB API (Scaling)</title>
+</head>
+
+<body>
+    
+    <script>
+        // scaling 적용 (h,w에 맞춰 그래프 높이,폭 변경)
+        var h=500;
+        var w=200;
+        //d3.json 활용 + Rest API
+        // html과 같은 경로에 있어야 그래프 작성 가능
+        // json 파일 Decoding필요 (encoding된 상태로 Data 수신)
+        // nested json data 활용
+        // json 안에 Array가 들어있을 경우 (foreach활용)
+                // category 명칭 추가
+
+                d3.json("json file location",function(error, data){
+            if (error) {  //Error 있는지 검색
+                    console.log(error);  //Error있을 경우 Console에서 log 출력 (print 함수)
+                } else {      //Error가 없을경우
+                    console.log("data출력하기");   // data 확인 (rest api로 호출해서 받아온 데이터 확인)
+                    console.log(data);   // data 확인 (rest api로 호출해서 받아온 데이터 확인)
+                    //https://developer.mozilla.org/ko/docs/Web/API/ :API 관련자료
+                    //window.atob(data.content) : Base64 (en-US) 인코딩된 문자열 데이터를 디코딩
+                    console.log("datdecodedData.contents[0] 출력하기");
+                    var decodedData = JSON.parse(window.atob(data.content)); //data decoding
+                        console.log(decodedData.contents[0]);
+                 
+                console.log("decoding된 data 출력 -contents");
+                console.log(decodedData.contents);
+                }
+                
+                console.log("decoding된 contents내 Data 살펴보기");
+                decodedData.contents.forEach(function(ds){
+                    console.log(ds.category);
+                    console.log(ds);
+                    // Category 표시
+                    showHeader(ds); 
+                    // contents내 data를 순회하며 그래프 작성
+                    buildLine(ds); //draw our line
+                })
+        function showHeader(ds){
+			 
+             d3.select("body").append("h1")
+                 .text(ds.category + " Sales (2013)");
+             
+        }
+
+        function buildLine(ds){
+            //scaling 변수 선언 
+            //x 변수 크기에 맞게 Scaling 
+            var xScale= d3.scale.linear()
+                            .domain([
+                                d3.min(ds.monthlySales, function(d){return d.month;}),
+                                d3.max(ds.monthlySales, function(d){return d.month;})
+                            ])
+                            .range([0,w]);
+            //y값에 맞춰 Scaling
+            var yScale= d3.scale.linear()
+                            .domain([0,d3.max(ds.monthlySales, function(d){return d.sales;})])          
+                            .range([h,0]);
+            var lineFun = d3.svg.line()
+                .x(function(d) {return xScale(d.month); } )
+                .y(function(d) {return yScale(d.sales); } )
+                .interpolate("linear");
+            var svg = d3.select("body")
+                .append("svg")
+                .attr({ width:w, height:h});
+            var viz= svg.append("path") //path 객체 추가
+                        .attr({
+                            d:lineFun(ds.monthlySales),
+                            "stroke":"purple",
+                            "stroke-width":3,
+                            "fill" :"none"
+                        });
+
+        }
+        
+                
+
+        });
+
+    </script>
+</body>
+
+</html>
